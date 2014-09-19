@@ -8,7 +8,7 @@ describe('Equalizer plugin', function() {
 
     beforeEach(function() {
       element = $("<div></div>")
-      width = "100px";
+      width = 100;
       element.width(width);
       timeout = 1000;
       columnWidth = 2;
@@ -42,6 +42,30 @@ describe('Equalizer plugin', function() {
     describe('concerning return value', function() {
       it('should return target element', function() {
         expect(equalizeCall()).toBe(element);
+      });
+    });
+
+    describe('concerning contents of target element', function() {
+      var columns;
+      var columnsSelector;
+
+      beforeEach(function() {
+        columnSelector = '.column';
+        columns = equalizeCall().find(columnSelector);
+      });
+
+      it('should fill element with columns', function() {
+        expect(columns.length).toBeGreaterThan(0);
+      });
+
+      it('should fill element with the correct number of columns', function() {
+        var columnsCount = Math.ceil(width / columnWidth);
+        expect(columns.length).toBe(columnsCount);
+      });
+
+      it('should set width of every column correctly', function() {
+        var widthsOfColumns = columns.map(function(i, elem) { return $(elem).width() });
+        expect($.unique(widthsOfColumns).toArray()).toEqual([columnWidth]);
       });
     });
   });

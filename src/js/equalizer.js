@@ -11,7 +11,7 @@
     var colQuantity = Math.ceil(this.width()/columnWidth);
     var cols = new Array(colQuantity);
     for (var i = 0; i < cols.length; i++) {
-      var span = $('<span/>').appendTo(this);
+      var span = $('<span class="column"/>').appendTo(this);
       span.css({
         verticalAlign: 'bottom',
         display: 'inline-block',
