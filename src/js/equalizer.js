@@ -25,7 +25,8 @@
       });
     }
 
-    run_equalizer(this.selector, timeout);
+    runEqualizer(this.selector, timeout);
+    return this;
   }
 
   var validateArguments = function(timeout, columnWidth) {
@@ -40,7 +41,7 @@
     return $.isNumeric(num) && (Math.floor(num) === num) && num > 0
   }
 
-  function run_equalizer (selector, timeout) {
+  var runEqualizer = function(selector, timeout) {
     $(selector + ' span').each(function (i) {
       var colHeight = Math.round($(selector).height() * Math.random());
       $(this).height(colHeight);
@@ -51,7 +52,7 @@
       timeout,
       'linear',
       function () {
-        //run_equalizer(selector, timeout);
+        //runEqualizer(selector, timeout);
       }
     );
   }

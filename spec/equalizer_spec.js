@@ -1,18 +1,27 @@
 describe('Equalizer plugin', function() {
   describe('.equalize', function() {
     var element;
-    var sampleTimeout = 1000;
-    var sampleColumnWidth = 2;
+    var width;
+    var timeout;
+    var columnWidth;
+    var equalizeCall;
 
     beforeEach(function() {
       element = $("<div></div>")
+      width = "100px";
+      element.width(width);
+      timeout = 1000;
+      columnWidth = 2;
+      equalizeCall = function() {
+        return element.equalize(timeout, columnWidth);
+      }
     });
 
     it('should be defined', function() {
       expect(element.equalize).toBeDefined();
     });
 
-    describe('based on an argument handling', function() {
+    describe('concerning argument handling', function() {
       it('should fail without arguments', function() {
         expect(function() { element.equalize() }).toThrow();
       });
@@ -26,7 +35,13 @@ describe('Equalizer plugin', function() {
       });
 
       it('should not fail with two positive integer arguments', function() {
-        expect(function() { element.equalize(sampleTimeout, sampleColumnWidth) }).not.toThrow();
+        expect(function() { element.equalize(timeout, columnWidth) }).not.toThrow();
+      });
+    });
+
+    describe('concerning return value', function() {
+      it('should return target element', function() {
+        expect(equalizeCall()).toBe(element);
       });
     });
   });
