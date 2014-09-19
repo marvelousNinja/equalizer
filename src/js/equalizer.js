@@ -1,45 +1,58 @@
-function setEqualizer(selector, timeout, colWidth) {
-  if (!colWidth) {
-    colWidth = 1;
-  }
-  $(selector).css({
-    verticalAlign: 'bottom',
-    lineHeight: $(selector).height() + 'px'
-  });
+(function($) {
+  $.fn.equalize = function(timeout, columnWidth) {
+    validateArguments(timeout, columnWidth);
 
-  // Кол-во столбиков
-  var colQuantity = Math.ceil($(selector).width()/colWidth);
-  var cols = new Array(colQuantity);
-  for (var i = 0; i < cols.length; i++) {
-    var span = $('<span/>').appendTo(selector);
-    span.css({
+    this.css({
       verticalAlign: 'bottom',
-      display: 'inline-block',
+      lineHeight: this.height() + 'px'
+    });
 
-      fontSize: 0,
-      lineHeight: 0,
+    // Кол-во столбиков
+    var colQuantity = Math.ceil(this.width()/columnWidth);
+    var cols = new Array(colQuantity);
+    for (var i = 0; i < cols.length; i++) {
+      var span = $('<span/>').appendTo(this);
+      span.css({
+        verticalAlign: 'bottom',
+        display: 'inline-block',
 
-      width: colWidth,
-      background: 'pink',
-      borderTop: '2px solid red'
+        fontSize: 0,
+        lineHeight: 0,
+
+        width: columnWidth,
+        background: 'pink',
+        borderTop: '2px solid red'
+      });
+    }
+
+    run_equalizer(this.selector, timeout);
+  }
+
+  var validateArguments = function(timeout, columnWidth) {
+    $.each(arguments, function() {
+      if(!isPositiveInteger(this.valueOf())) {
+        throw new Error('Argument error: Equalize expects two positive integers');
+      }
     });
   }
 
-  run_equalizer(selector, timeout);
-}
+  var isPositiveInteger = function(num) {
+    return $.isNumeric(num) && (Math.floor(num) === num) && num > 0
+  }
 
-function run_equalizer (selector, timeout) {
-  $(selector + ' span').each(function (i) {
-    var colHeight = Math.round($(selector).height() * Math.random());
-    $(this).height(colHeight);
-  });
+  function run_equalizer (selector, timeout) {
+    $(selector + ' span').each(function (i) {
+      var colHeight = Math.round($(selector).height() * Math.random());
+      $(this).height(colHeight);
+    });
 
-  $(selector + ' span').animate(
-    {height: $(selector).height()/2},
-    timeout,
-    'linear',
-    function () {
-      //run_equalizer(selector, timeout);
-    }
-  );
-}
+    $(selector + ' span').animate(
+      {height: $(selector).height()/2},
+      timeout,
+      'linear',
+      function () {
+        //run_equalizer(selector, timeout);
+      }
+    );
+  }
+}( jQuery ));
