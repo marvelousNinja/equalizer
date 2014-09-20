@@ -52,7 +52,7 @@
       timeout,
       'linear',
       function () {
-        //runEqualizer(element, timeout);
+        runEqualizer(element, timeout);
       }
     );
   }
