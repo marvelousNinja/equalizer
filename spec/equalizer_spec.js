@@ -9,9 +9,13 @@ describe('Equalizer plugin', function() {
     beforeEach(function() {
       element = $("<div></div>")
       width = 100;
+      height = 100;
       element.width(width);
+      element.height(height);
       timeout = 1000;
       columnWidth = 2;
+      columnsSelector = '.column';
+
       equalizeCall = function() {
         return element.equalize(timeout, columnWidth);
       }
@@ -47,11 +51,9 @@ describe('Equalizer plugin', function() {
 
     describe('concerning contents of target element', function() {
       var columns;
-      var columnsSelector;
 
       beforeEach(function() {
-        columnSelector = '.column';
-        columns = equalizeCall().find(columnSelector);
+        columns = equalizeCall().find(columnsSelector);
       });
 
       it('should fill element with columns', function() {
@@ -66,6 +68,36 @@ describe('Equalizer plugin', function() {
       it('should set width of every column correctly', function() {
         var widthsOfColumns = columns.map(function(i, elem) { return $(elem).width() });
         expect($.unique(widthsOfColumns).toArray()).toEqual([columnWidth]);
+      });
+    });
+
+    describe('concerning animations', function() {
+      describe('during one iteration', function() {
+        beforeEach(function() {
+          spyOn($.fn, 'animate');
+        });
+
+        it('should animate only one time', function() {
+          equalizeCall();
+          expect($.fn.animate.calls.count()).toBe(1);
+        });
+
+        it('should animate with correct parameters', function() {
+          equalizeCall();
+          expect($.fn.animate).toHaveBeenCalledWith(
+            { height: height / 2 },
+            timeout,
+            jasmine.any(String),
+            jasmine.any(Function)
+          );
+        });
+
+        it('should change heights of columns', function() {
+          spyOn(Math, 'random').and.returnValue(1);
+          var columns = equalizeCall().find(columnsSelector);
+          var heightsOfColumns = columns.map(function(i, elem) { return $(elem).height() });
+          expect(expect($.unique(heightsOfColumns).toArray()).toEqual([height]));
+        });
       });
     });
   });

@@ -25,7 +25,7 @@
       });
     }
 
-    runEqualizer(this.selector, timeout);
+    runEqualizer(this, timeout);
     return this;
   }
 
@@ -41,18 +41,18 @@
     return $.isNumeric(num) && (Math.floor(num) === num) && num > 0
   }
 
-  var runEqualizer = function(selector, timeout) {
-    $(selector + ' span').each(function (i) {
-      var colHeight = Math.round($(selector).height() * Math.random());
+  var runEqualizer = function(element, timeout) {
+    element.find('.column').each(function (i) {
+      var colHeight = Math.round(element.height() * Math.random());
       $(this).height(colHeight);
     });
 
-    $(selector + ' span').animate(
-      {height: $(selector).height()/2},
+    element.find('.column').animate(
+      {height: element.height()/2},
       timeout,
       'linear',
       function () {
-        //runEqualizer(selector, timeout);
+        //runEqualizer(element, timeout);
       }
     );
   }
