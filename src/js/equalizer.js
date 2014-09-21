@@ -1,74 +1,89 @@
 (function($) {
-  $.fn.equalize = function(timeout, columnWidth) {
-    validateArguments(timeout, columnWidth);
+  $.fn.equalize = function(duration, columnWidth) {
+    var args = setDefaultArguments(duration, columnWidth);
+    validateArguments(args);
 
-    this.css({
-      verticalAlign: 'bottom',
-      lineHeight: this.height() + 'px'
-    });
+    prepareContainer(this, args);
+    runEqualizer(this, args);
 
-    // Кол-во столбиков
-    var colQuantity = Math.ceil(this.width()/columnWidth);
-    var cols = new Array(colQuantity);
-    for (var i = 0; i < cols.length; i++) {
-      var span = $('<span class="column"/>').appendTo(this);
-      span.css({
-        verticalAlign: 'bottom',
-        display: 'inline-block',
-
-        fontSize: 0,
-        lineHeight: 0,
-
-        width: columnWidth,
-        background: 'pink',
-        borderTop: '2px solid red'
-      });
-    }
-
-    runEqualizer(this, timeout);
     return this;
   }
 
-  var validateArguments = function(timeout, columnWidth) {
-    $.each(arguments, function() {
-      if(!isPositiveInteger(this.valueOf())) {
-        throw new Error('Argument error: Equalize expects two positive integers');
-      }
+  var setDefaultArguments = function(duration, columnWidth) {
+    return $.extend({
+      duration: 1000,
+      columnWidth: 1,
+      columnClass: 'equalize-column',
+      containerClass: 'equalize-container'
+    }, {
+      duration: duration,
+      columnWidth: columnWidth
     });
+  }
+
+  var validateArguments = function(args) {
+    if(!isPositiveInteger(args.duration) || !isPositiveInteger(args.columnWidth)) {
+      throw new Error('Argument error: Equalize expects two positive integers');
+    }
   }
 
   var isPositiveInteger = function(num) {
     return $.isNumeric(num) && (Math.floor(num) === num) && num > 0
   }
 
-  var runEqualizer = function(element, timeout) {
-    var maxHeight = element.height();
-    var middleHight = maxHeight / 2;
-    var columns = element.find('.column');
+  var prepareContainer = function(container, args) {
+    clearContents(container);
+    appendColumns(container, args);
+    container.css({ lineHeight: container.height() + 'px' });
+    container.addClass(args.containerClass);
+  }
+
+  var clearContents = function(container) {
+    container.empty();
+  }
+
+  var appendColumns = function(container, args) {
+    var columnsQuantity = Math.ceil(container.width() / args.columnWidth);
+    var sampleColumn = $('<span/>').addClass(args.columnClass).css({ width: args.columnWidth})[0].outerHTML;
+    container.append(repeatString(sampleColumn, columnsQuantity));
+    container.columns = container.find('.' + args.columnClass);
+  }
+
+  var repeatString = function(string, times) {
+    var result = '';
+    for (;;) {
+      if (times & 1) result += string;
+      times >>= 1;
+      if (times) string += string;
+      else break;
+    }
+    return result;
+  }
+
+  var runEqualizer = function(container, args) {
+    var top = container.height();
+    var middle = top / 2;
 
     var animateDown = function() {
-      $.when.apply($, columns.map(function() {
-        return animateTo(this, middleHight);
-      }));
+      container.columns.map(function(column) {
+        return animateTo(this, middle, args);
+      });
       animateUp();
     }
 
     var animateUp = function() {
-      $.when.apply($, columns.map(function() {
-        return animateTo(this, maxHeight * Math.random());
+      $.when.apply($, container.columns.map(function() {
+        return animateTo(this, top * Math.random(), args);
       })).done(animateDown);
     }
 
-    var animateTo = function(target, height) {
-      return $(target).animate(
-        { height: height },
-        {
-          duration: timeout,
-          easing: 'linear'
-        }
-      );
-    }
-
     animateUp();
+  }
+
+  var animateTo = function(target, height, args) {
+    return $(target).animate({ height: height }, {
+      duration: args.duration,
+      easing: 'linear'
+    });
   }
 }( jQuery ));

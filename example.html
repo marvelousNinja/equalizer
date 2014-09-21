@@ -5,6 +5,28 @@
     <script src="vendor/jquery-1.11.1/jquery.js"></script>
     <script src="src/js/equalizer.js"></script>
     <link rel="stylesheet" href="src/css/equalizer.css">
+    <style>
+      .equalizer-wrapper {
+        float:left;
+        margin: 0 20px 20px 0;
+      }
+      .equalizer {
+        overflow: hidden;
+        border: 1px solid #ddd;
+      }
+      .equalizer.small {
+        width: 100px;
+        height: 100px;
+      }
+      .equalizer.normal {
+        width: 200px;
+        height: 200px;
+      }
+      .equalizer.big {
+        width: 300px;
+        height: 300px;
+      }
+    </style>
     <script>
     window.onload = function () {
       $('#eq_1 .equalizer').equalize(1000, 2);

@@ -7,14 +7,13 @@ describe('Equalizer plugin', function() {
     var equalizeCall;
 
     beforeEach(function() {
-      element = $("<div></div>")
+      element = $("<div></div>");
       width = 100;
       height = 100;
       element.width(width);
       element.height(height);
       timeout = 1000;
       columnWidth = 2;
-      columnsSelector = '.column';
 
       equalizeCall = function() {
         return element.equalize(timeout, columnWidth);
@@ -26,8 +25,8 @@ describe('Equalizer plugin', function() {
     });
 
     describe('concerning argument handling', function() {
-      it('should fail without arguments', function() {
-        expect(function() { element.equalize() }).toThrow();
+      it('should not fail without arguments', function() {
+        expect(function() { element.equalize() }).not.toThrow();
       });
 
       it('should fail with negative numbers', function() {
@@ -53,7 +52,7 @@ describe('Equalizer plugin', function() {
       var columns;
 
       beforeEach(function() {
-        columns = equalizeCall().find(columnsSelector);
+        columns = equalizeCall().columns;
       });
 
       it('should fill element with columns', function() {
@@ -79,16 +78,17 @@ describe('Equalizer plugin', function() {
         });
 
         it('should animate each column one time', function() {
-          var columns = equalizeCall().find(columnsSelector);
+          var columns = equalizeCall().columns;
           expect($.fn.animate.calls.count()).toBe(columns.length);
         });
 
         it('should animate with correct parameters', function() {
           spyOn(Math, 'random').and.returnValue(1);
+
           equalizeCall();
-          expect($.fn.animate).toHaveBeenCalledWith(
-            { height: height },
-            jasmine.objectContaining({ duration: timeout})
+
+          expect($.fn.animate).toHaveBeenCalledWith({ height: height },
+            jasmine.objectContaining({ duration: timeout })
           );
         });
       });
