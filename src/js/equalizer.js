@@ -42,18 +42,33 @@
   }
 
   var runEqualizer = function(element, timeout) {
-    element.find('.column').each(function (i) {
-      var colHeight = Math.round(element.height() * Math.random());
-      $(this).height(colHeight);
-    });
+    var maxHeight = element.height();
+    var middleHight = maxHeight / 2;
+    var columns = element.find('.column');
 
-    element.find('.column').animate(
-      {height: element.height()/2},
-      timeout,
-      'linear',
-      function () {
-        runEqualizer(element, timeout);
-      }
-    );
+    var animateDown = function() {
+      $.when.apply($, columns.map(function() {
+        return animateTo(this, middleHight);
+      }));
+      animateUp();
+    }
+
+    var animateUp = function() {
+      $.when.apply($, columns.map(function() {
+        return animateTo(this, maxHeight * Math.random());
+      })).done(animateDown);
+    }
+
+    var animateTo = function(target, height) {
+      return $(target).animate(
+        { height: height },
+        {
+          duration: timeout,
+          easing: 'linear'
+        }
+      );
+    }
+
+    animateUp();
   }
 }( jQuery ));

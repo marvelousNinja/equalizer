@@ -75,28 +75,21 @@ describe('Equalizer plugin', function() {
       describe('during one iteration', function() {
         beforeEach(function() {
           spyOn($.fn, 'animate');
+          spyOn($, 'when').and.returnValue({ done: function() {} });
         });
 
-        it('should animate only one time', function() {
-          equalizeCall();
-          expect($.fn.animate.calls.count()).toBe(1);
+        it('should animate each column one time', function() {
+          var columns = equalizeCall().find(columnsSelector);
+          expect($.fn.animate.calls.count()).toBe(columns.length);
         });
 
         it('should animate with correct parameters', function() {
+          spyOn(Math, 'random').and.returnValue(1);
           equalizeCall();
           expect($.fn.animate).toHaveBeenCalledWith(
-            { height: height / 2 },
-            timeout,
-            jasmine.any(String),
-            jasmine.any(Function)
+            { height: height },
+            jasmine.objectContaining({ duration: timeout})
           );
-        });
-
-        it('should change heights of columns', function() {
-          spyOn(Math, 'random').and.returnValue(1);
-          var columns = equalizeCall().find(columnsSelector);
-          var heightsOfColumns = columns.map(function(i, elem) { return $(elem).height() });
-          expect(expect($.unique(heightsOfColumns).toArray()).toEqual([height]));
         });
       });
     });
