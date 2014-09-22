@@ -3,6 +3,7 @@
   <head>
     <title>Equalizer</title>
     <script src="vendor/jquery-1.11.1/jquery.js"></script>
+    <script src="vendor/velocity-1.1.0/velocity.js"></script>
     <script src="src/js/equalizer.js"></script>
     <link rel="stylesheet" href="src/css/equalizer.css">
     <style>
@@ -29,8 +30,8 @@
     </style>
     <script>
     window.onload = function () {
-      $('#eq_1 .equalizer').equalize(1000, 2);
-      $('#eq_2 .equalizer').equalize(1000, 2);
+      $('#eq_1 .equalizer').equalize(100, 2);
+      $('#eq_2 .equalizer').equalize(100, 2);
       $('#eq_3 .equalizer').equalize(1000, 2);
     }
     </script>

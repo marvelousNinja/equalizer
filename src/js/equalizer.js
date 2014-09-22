@@ -81,7 +81,7 @@
   }
 
   var animateTo = function(target, height, args) {
-    return $(target).animate({ height: height }, {
+    return $(target).velocity({ height: height }, {
       duration: args.duration,
       easing: 'linear'
     });
